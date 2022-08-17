@@ -4,26 +4,32 @@ import {
     decreaseQuantity,
     increaseQuantity,
 } from '../../redux/addToCart/actions';
-import MinusIcon from '../Shared/MinusIcon';
-import PlusIcon from '../Shared/PlusIcon';
+import CartItem from '../CartItem/CartItem';
 
 const Cart = () => {
+    // get state values
     const cartItem = useSelector((state) => state.addToCart);
+
+    // get dispatch function
     const dispatch = useDispatch();
 
+    // quantity increase dispatch
     const quantityIncrease = (name, quantity) => {
         dispatch(increaseQuantity(name, quantity));
     };
 
+    // quantity decrease dispatch
     const quantityDecrease = (name, quantity) => {
         dispatch(decreaseQuantity(name, quantity));
     };
 
+    // total items
     const totalItems = cartItem.reduce(
         (prevValue, currentValue) => prevValue + currentValue.quantity,
         0
     );
 
+    // quantity prices
     const pricePerQuantity = cartItem.map((item) => item.price * item.quantity);
 
     const totalPrice = pricePerQuantity.reduce(
@@ -35,35 +41,7 @@ const Cart = () => {
         <div className="col-span-12 sm:col-span-12 md:col-span-5 lg:col-span-4 xxl:col-span-4">
             <div className="bg-white py-4 px-4 shadow-md rounded-lg my-4 mx-4">
                 {cartItem.map((item, index) => item.quantity ? (
-                    <div
-                        key={index}
-                        className="flex justify-between border-b-2 mb-2"
-                    >
-                        <div className="text-lg py-2">
-                            <p>{item.name}</p>
-                        </div>
-                        <div className="text-lg py-2">
-                            <div className="flex flex-row space-x-2 w-full items-center rounded-lg">
-                                <button
-                                    onClick={() =>
-                                        quantityDecrease(item.name, 1)
-                                    }
-                                    className="focus:outline-none bg-purple-700 hover:bg-purple-800 text-white font-bold py-1 px-1 rounded-full inline-flex items-center"
-                                >
-                                    <MinusIcon />
-                                </button>
-                                <p>{item.quantity}</p>
-                                <button
-                                    onClick={() =>
-                                        quantityIncrease(item.name, 1)
-                                    }
-                                    className="focus:outline-none bg-purple-700 hover:bg-purple-800 text-white font-bold py-1 px-1 rounded-full inline-flex items-center"
-                                >
-                                    <PlusIcon />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    <CartItem key={index} name={item.name} quantity={item.quantity} quantityIncrease={quantityIncrease} quantityDecrease={quantityDecrease} />
                 ) : <>
                 </>)}
 
